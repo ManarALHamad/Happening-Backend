@@ -106,6 +106,10 @@ class Startup(models.Model):
         related_name="startups"
     )
 
+    name=models.CharField(
+        max_length=50
+    )
+
     description =models.TextField()
 
     problem = models.TextField(
@@ -294,23 +298,16 @@ class TeamMember(models.Model):
         auto_now_add=True
     )
 
-# prevents duplicate records in a database table.
-
-class Meta:
-    constraints = [
-        models.UniqueConstraint(
-            fields=["startup", "user"],
-            name="unique_startup_team_member"
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["startup", "user"],
+                name="unique_startup_team_member"
             )
         ]
 
     def __str__(self):
         return f"{self.user.username} - {self.startup.name}"
-
-
-
-
-
 
 
 
