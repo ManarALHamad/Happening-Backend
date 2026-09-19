@@ -37,7 +37,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-class Meta:
+     class Meta:
       model = Profile
       fields = [
          "_id",
