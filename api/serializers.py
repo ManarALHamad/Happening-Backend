@@ -118,7 +118,7 @@ class StartupSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    updateAt = serializers.DateTimeField(
+    updatedAt = serializers.DateTimeField(
         source="updated_at",
         read_only=True
     )

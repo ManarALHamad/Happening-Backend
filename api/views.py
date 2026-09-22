@@ -167,6 +167,33 @@ def profile_detail(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+#image endpoint
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def profile_image_upload(request):
+
+    profile = request.user.profile
+
+    image = request.FILES.get("profile_image")
+
+    if not image:
+        return Response(
+            {"err": "No image provided"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    profile.profile_image = image
+    profile.save()
+
+    serializer = ProfileSerializer(profile)
+
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK
+    )
+
+
 #Create the startup get and post 
 
 @api_view(["GET", "POST"])
@@ -213,6 +240,40 @@ def startup_list_create(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+#startup logo 
+
+@api_view(["POST"])
+def startup_logo_upload(request, startup_id):
+
+    startup = get_object_or_404(
+        Startup,
+        id=startup_id
+    )
+
+    # Only the founder who owns the startup can upload the logo
+    if startup.founder != request.user:
+        return Response(
+            {"err": "Only the startup founder can upload the logo."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    logo = request.FILES.get("logo")
+
+    if not logo:
+        return Response(
+            {"err": "No logo provided."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    startup.logo = logo
+    startup.save()
+
+    serializer = StartupSerializer(startup)
+
+    return Response(
+        serializer.data,
+        status=status.HTTP_200_OK
+    )
 #startup update and delete only founders can do
 
 @api_view(["GET", "PUT", "PATCH", "DELETE"])
@@ -363,7 +424,7 @@ def role_detail(request, role_id):
 
 
     
-# Users applies to statup
+# Users applies to startup
 
 
 @api_view(["POST"])
